@@ -99,9 +99,8 @@ export const addShopOrder = ({ bodymen: { body }, params }, res, next) => {
     let total = body.total;
     body.total = 0.0;
 
-    products?.map((product) => {      
-      body?.items?.filter(item => {  
-        console.log("working", item);
+    products.map((product) => {      
+      body.items.filter(item => {  
         if(item.pid == undefined){
           res.status(500).send({
             valid: false,

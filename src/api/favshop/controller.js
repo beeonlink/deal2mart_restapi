@@ -6,9 +6,8 @@ export const create = ({ bodymen: { body }, params, user }, res, next) => {
   User.findById(params.id === 'me' ? user.id : params.id)
   .then(notFound(res))
   .then((user) => {
-    console.log(user);
     if(user){
-      if(user.wishlist?.shops?.includes(body.shop)){
+      if(user.favshop.includes(body.shop)){
         res.status(409).json({
           valid: false,
           param: 'shop',
@@ -16,7 +15,7 @@ export const create = ({ bodymen: { body }, params, user }, res, next) => {
         })
         return user;
       }
-      user.wishlist?.shops?.push(body.shop);
+      user.favshop.push(body.shop);
       user.save();
     }
     res.status(200).json({
@@ -38,7 +37,7 @@ export const show = ({ params }, res, next) => {
   .then(notFound(res))
   .then((user) => {
     if(user){
-      Shop.find( { _id: { $in: user.wishlist?.shops } } ).then((shops) => {
+      Shop.find( { _id: { $in: user.favshop } } ).then((shops) => {
         res.status(200).json(shops);
       })
     }
@@ -55,7 +54,7 @@ User.findById(params.id === 'me' ? user.id : params.id)
   .then(notFound(res))
   .then((user) => {
     if(user){
-      if(!user.wishlist?.shops?.includes(body.shop)){
+      if(!user.favshop.includes(body.shop)){
         res.status(409).json({
           valid: false,
           param: 'shop',
@@ -63,7 +62,7 @@ User.findById(params.id === 'me' ? user.id : params.id)
         })
         return user;
       }
-      user.wishlist?.shops?.pop(body.shop);
+      user.favshop.pop(body.shop);
       user.save();
     }
     res.status(204).json({
